@@ -22,6 +22,7 @@ module Zaif
             @read_timeout = opt[:read_timeout] || 15
             @zaif_public_url = "https://api.zaif.jp/api/1/"
             @zaif_trade_url = "https://api.zaif.jp/tapi"
+            @zaif_leverage_trade_url = "https://api.zaif.jp/tlapi"
         end
 
         def set_api_key(api_key, api_secret)
@@ -72,7 +73,7 @@ module Zaif
         #
         # Trade API
         #
-        
+
         # Get user infomation.
         # Need api key.
         # @return [Hash] Infomation of user.
@@ -92,7 +93,7 @@ module Zaif
         # Get your trade history.
         # Avalible options: from. count, from_id, end_id, order, since, end, currency_pair
         # Need api key.
-        # @param [Hash] 
+        # @param [Hash]
         def get_my_trades(option = {})
             json = post_ssl(@zaif_trade_url, "trade_history", option)
             # Convert to datetime
@@ -169,6 +170,12 @@ module Zaif
         def deposit_history(currency, option = {})
             option["currency"] = currency
             json = post_ssl(@zaif_trade_url, "deposit_history", option)
+            return json
+        end
+
+        def get_positions(type, option = {})
+            option["type"] = type
+            json = post_ssl(@zaif_leverage_trade_url, "get_positions", option)
             return json
         end
 
@@ -266,6 +273,6 @@ module Zaif
                 sleep(@cool_down_time)
             end
         end
-        
+
     end
 end
